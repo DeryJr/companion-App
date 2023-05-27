@@ -4,8 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -13,8 +14,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -25,9 +24,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -149,7 +152,7 @@ fun Email() {
         value = emailState.value,
         onValueChange = { emailState.value = it },
         label = { Text(text = "email", color = Color(0xFF3C0101), fontWeight = FontWeight.Bold) },
-        placeholder = { Text(text = "smt@stu.ibu.edu.ba", color = Color(0xFF3C0101)) },
+        placeholder = { Text(text = "smtn@stu.ibu.edu.ba", color = Color(0xFF3C0101)) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             containerColor = Color(0xFFFFB1B1),
             textColor = Color(0xFF3C0101),
@@ -157,7 +160,8 @@ fun Email() {
             unfocusedBorderColor = Color(0xFF521616),
             focusedBorderColor = Color(0xFF3C0101),
             errorBorderColor = Color.Red,
-        )
+        ),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
     )
 }
 
@@ -166,6 +170,8 @@ fun Email() {
 fun Password() {
 
     val passwordState = remember { mutableStateOf("") }
+    val showPassword = remember { mutableStateOf(false) }
+
 
     OutlinedTextField(
         value = passwordState.value,
@@ -186,6 +192,31 @@ fun Password() {
             focusedBorderColor = Color(0xFF3C0101),
             errorBorderColor = Color.Red
         ),
+        visualTransformation = if (showPassword.value) {
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
+        },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        trailingIcon = {
+            if (showPassword.value) {
+                IconButton(onClick = { showPassword.value = false }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_visibility_on),
+                        contentDescription = stringResource(id = R.string.hide_password),
+                        tint = Color(0xFF3C0101)
+                    )
+                }
+            } else {
+                IconButton(onClick = { showPassword.value = true }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_visibility_off),
+                        contentDescription = stringResource(id = R.string.hide_password),
+                        tint = Color(0xFF3C0101)
+                    )
+                }
+            }
+        }
     )
 }
 
