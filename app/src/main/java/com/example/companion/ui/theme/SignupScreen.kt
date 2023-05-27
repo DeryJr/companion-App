@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,6 +41,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.companion.Destination
 import com.example.companion.R
 import com.example.companion.data.User
 import com.example.companion.data.UserDB
@@ -47,7 +49,6 @@ import com.example.companion.ui.theme.states.EmailState
 import com.example.companion.ui.theme.states.PasswordState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 // @Darijus, label na text fieldovima kad klikneš i ode gore se ne vidi
@@ -56,7 +57,11 @@ import kotlinx.coroutines.launch
 // Skontao neki fix ili ukini pozadinu skroz i promjeni boju texta, idk.
 
 @Composable
-fun SignUpScreen(navController: NavController, database: UserDB) {
+fun SignUpScreen(
+    navController: NavController,
+    database: UserDB,
+) {
+
     SignupBackgroundImage()
     SignupContent(navController = navController, database = database)
 }
@@ -117,7 +122,8 @@ fun SignupContent(navController: NavController, database: UserDB) {
             enabled = emailState.isValid() && passwordState.isValid(),
             email = emailState.text,
             password = passwordState.text,
-            database = database
+            database = database,
+            navController = navController
         )
     }
 }
@@ -201,7 +207,7 @@ fun Email(
     email: String,
     error: String?,
     onEmailChanged: (String) -> Unit,
-    onImeAction: () -> Unit
+    onImeAction: () -> Unit,
 ) {
     OutlinedTextField(
         value = email,
@@ -238,7 +244,8 @@ fun Email(
             onNext = {
                 onImeAction()
             }
-        )
+        ),
+        modifier = Modifier.fillMaxWidth(.9f)
     )
 
     error?.let { ErrorField(it) }
@@ -263,7 +270,7 @@ fun Password(
     password: String,
     error: String?,
     onPasswordChanged: (String) -> Unit,
-    onImeAction: () -> Unit
+    onImeAction: () -> Unit,
 ) {
 
     val showPassword = remember { mutableStateOf(false) }
@@ -325,14 +332,21 @@ fun Password(
                 }
             }
         },
-        isError = error != null
+        isError = error != null,
+        modifier = Modifier.fillMaxWidth(.9f)
     )
 
     error?.let { ErrorField(error = it) }
 }
 
 @Composable
-fun SignupButton(enabled: Boolean, email: String, password: String, database: UserDB) {
+fun SignupButton(
+    enabled: Boolean,
+    email: String,
+    password: String,
+    database: UserDB,
+    navController: NavController
+) {
     Button(
         onClick = {
             val user = User(0, email = email, password = password)
@@ -390,7 +404,7 @@ fun SignupButton(enabled: Boolean, email: String, password: String, database: Us
         color = Color(0xFFFFB1B1),
         modifier = Modifier.padding(top = 16.dp)
     )
-    TextButton(onClick = { /*TODO*/ }, modifier = Modifier) {
+    TextButton(onClick = { navController.navigate(Destination.Login.route) }, modifier = Modifier) {
         Text(
             text = "Login",
             fontWeight = FontWeight.Bold,

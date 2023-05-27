@@ -6,6 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
@@ -13,12 +16,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import com.example.companion.data.UserDB
 import com.example.companion.ui.theme.theme.CompanionTheme
 import com.example.companion.ui.theme.IntroScreen
 import com.example.companion.ui.theme.LoginScreen
 import com.example.companion.ui.theme.SignUpScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 sealed class Destination(val route: String) {
     object Intro : Destination("Intro")
@@ -43,8 +48,12 @@ class IntroActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.Black
                 ) {
+
                     val navController = rememberNavController()
-                    Intro(navController = navController, database)
+                    Intro(
+                        navController = navController,
+                        database,
+                    )
                 }
             }
         }
@@ -52,7 +61,11 @@ class IntroActivity : ComponentActivity() {
 }
 
 @Composable
-fun Intro(navController: NavHostController, database: UserDB) {
+fun Intro(
+    navController: NavHostController,
+    database: UserDB,
+
+) {
 
     NavHost(navController = navController, startDestination = Destination.Intro.route) {
         composable(Destination.Intro.route) { IntroScreen(navController = navController) }
@@ -62,7 +75,12 @@ fun Intro(navController: NavHostController, database: UserDB) {
                 database = database
             )
         }
-        composable(Destination.Login.route) { LoginScreen(navController = navController) }
+        composable(Destination.Login.route) {
+            LoginScreen(
+                navController = navController,
+                database = database
+            )
+        }
     }
 
 }
