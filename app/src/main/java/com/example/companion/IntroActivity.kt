@@ -17,6 +17,7 @@ import com.example.companion.ui.theme.CompanionTheme
 sealed class Destination(val route: String) {
     object Intro : Destination("Intro")
     object Login : Destination("Login")
+    object Signup : Destination("Signup")
 }
 
 class IntroActivity : ComponentActivity() {
@@ -42,6 +43,7 @@ fun Intro(navController: NavHostController) {
 
     NavHost(navController = navController, startDestination = Destination.Intro.route) {
         composable(Destination.Intro.route) { IntroScreen(navController = navController) }
+        composable(Destination.Signup.route) { SignUpScreen(navController = navController) }
         composable(Destination.Login.route) { LoginScreen(navController = navController) }
     }
 

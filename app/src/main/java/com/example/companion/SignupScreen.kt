@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,16 +30,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun IntroScreen(navController: NavController) {
-    //val ctx = LocalContext.current
-
+fun SignUpScreen(navController: NavController) {
     Image(
-        painter = painterResource(R.drawable.intro_background),
+        painter = painterResource(R.drawable.signup_background),
         contentDescription = null,
         modifier = Modifier.fillMaxSize(),
         contentScale = ContentScale.Crop,
     )
-
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Row(
             modifier = Modifier
@@ -78,63 +74,39 @@ fun IntroScreen(navController: NavController) {
 
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(8.dp))
+                .padding(horizontal = 16.dp)
+                .clip(RoundedCornerShape(16.dp))
                 .background(Color(0x8CFAB1B1))
+                .align(Alignment.Start)
+                .padding(horizontal = 8.dp)
         ) {
             Text(
                 text = buildAnnotatedString {
                     withStyle(
                         style = SpanStyle(
-                            color = Color(0xFFFFEAEA),
-                            fontSize = 40.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    ) {
-                        append("Let's ")
-                    }
-                    withStyle(
-                        style = SpanStyle(
                             color = Color(0xFF3C0101), // Override color here
-                            fontSize = 40.sp,
+                            fontSize = 32.sp,
                             fontWeight = FontWeight.Bold
                         )
                     ) {
-                        append("Travel")
+                        append("Welcome,")
                     }
                     withStyle(
                         style = SpanStyle(
                             color = Color(0xFFFFEAEA),
-                            fontSize = 40.sp,
+                            fontSize = 32.sp,
                             fontWeight = FontWeight.Bold,
                         )
                     ) {
-                        append("\n\ntogether")
+                        append("\n\nSignup to continue")
                     }
                 },
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                textAlign = TextAlign.Start,
             )
         }
-        Spacer(modifier = Modifier.padding(top = 180.dp))
-        TextButton(
-            onClick = {
-                      navController.navigate(Destination.Signup.route)
-//                val loginIntent = Intent(ctx, MainActivity::class.java)
-//                ctx.startActivity(loginIntent)
 
-            }, modifier = Modifier
-                .clip(RoundedCornerShape(40.dp))
-                .background(Color(0x8CFD9A9A))
-                .fillMaxWidth(.5f)
-                .fillMaxHeight(.2f)
-        ) {
-            Text(
-                text = "Start",
-                color = Color(0xFFFFEAEA),
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-            )
+        Column(modifier = Modifier.fillMaxHeight(1f), verticalArrangement = Arrangement.SpaceEvenly) {
+
         }
     }
 }
