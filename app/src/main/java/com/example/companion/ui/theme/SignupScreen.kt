@@ -41,8 +41,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.companion.R
+import com.example.companion.data.User
+import com.example.companion.data.UserDB
 import com.example.companion.ui.theme.states.EmailState
 import com.example.companion.ui.theme.states.PasswordState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 
 // @Darijus, label na text fieldovima kad klikneš i ode gore se ne vidi
 // Pokušao sam da izmajmunišem nešto sa pozadinom ali mi ne da da idem to granica outTexFielda
@@ -50,9 +56,9 @@ import com.example.companion.ui.theme.states.PasswordState
 // Skontao neki fix ili ukini pozadinu skroz i promjeni boju texta, idk.
 
 @Composable
-fun SignUpScreen(navController: NavController) {
+fun SignUpScreen(navController: NavController, database: UserDB) {
     SignupBackgroundImage()
-    SignupContent(navController)
+    SignupContent(navController = navController, database = database)
 }
 
 @Composable
@@ -66,7 +72,7 @@ fun SignupBackgroundImage() {
 }
 
 @Composable
-fun SignupContent(navController: NavController) {
+fun SignupContent(navController: NavController, database: UserDB) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -107,7 +113,12 @@ fun SignupContent(navController: NavController) {
             }
         )
         Spacer(modifier = Modifier.weight(1f))
-        SignupButton(enabled = emailState.isValid() && passwordState.isValid())
+        SignupButton(
+            enabled = emailState.isValid() && passwordState.isValid(),
+            email = emailState.text,
+            password = passwordState.text,
+            database = database
+        )
     }
 }
 
@@ -321,9 +332,18 @@ fun Password(
 }
 
 @Composable
-fun SignupButton(enabled: Boolean) {
+fun SignupButton(enabled: Boolean, email: String, password: String, database: UserDB) {
     Button(
-        onClick = { },
+        onClick = {
+            val user = User(0, email = email, password = password)
+            CoroutineScope(Dispatchers.IO).launch {
+                database.userDao().updateUser(user)
+//                val user = database.userDao().getUser(1).firstOrNull()
+//                user?.let {
+//                    database.userDao().deleteUser(user)
+//                }
+            }
+        },
         modifier = Modifier.fillMaxWidth(.6f),
         colors = ButtonDefaults.buttonColors(Color(0xFFFFB1B1)),
         enabled = enabled

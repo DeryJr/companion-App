@@ -12,6 +12,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.example.companion.data.UserDB
 import com.example.companion.ui.theme.theme.CompanionTheme
 import com.example.companion.ui.theme.IntroScreen
 import com.example.companion.ui.theme.LoginScreen
@@ -24,8 +27,15 @@ sealed class Destination(val route: String) {
 }
 
 class IntroActivity : ComponentActivity() {
+    private lateinit var database: UserDB
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        database = Room.databaseBuilder(
+            applicationContext,
+            UserDB::class.java,
+            "my-database"
+        ).build()
         setContent {
             CompanionTheme {
                 // A surface container using the 'background' color from the theme
@@ -34,7 +44,7 @@ class IntroActivity : ComponentActivity() {
                     color = Color.Black
                 ) {
                     val navController = rememberNavController()
-                    Intro(navController = navController)
+                    Intro(navController = navController, database)
                 }
             }
         }
@@ -42,11 +52,16 @@ class IntroActivity : ComponentActivity() {
 }
 
 @Composable
-fun Intro(navController: NavHostController) {
+fun Intro(navController: NavHostController, database: UserDB) {
 
     NavHost(navController = navController, startDestination = Destination.Intro.route) {
         composable(Destination.Intro.route) { IntroScreen(navController = navController) }
-        composable(Destination.Signup.route) { SignUpScreen(navController = navController) }
+        composable(Destination.Signup.route) {
+            SignUpScreen(
+                navController = navController,
+                database = database
+            )
+        }
         composable(Destination.Login.route) { LoginScreen(navController = navController) }
     }
 

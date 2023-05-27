@@ -1,23 +1,21 @@
 package com.example.companion.data
 
+import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface UserDao {
 
     @Query("SELECT * FROM user ORDER BY id ASC")
-    fun getUsers(): Flow<User>
+    fun getUsers(): Flow<List<User>>
 
     @Query("SELECT * FROM user WHERE id = :id")
-    suspend fun getUser(id: Int): User
+    fun getUser(id: Int): Flow<User>
 
-    @Insert suspend fun addUser(user: User)
-
-    @Update
-    suspend fun updateUser(user: User)
+    @Upsert suspend fun updateUser(user: User)
 
     @Delete
     suspend fun deleteUser(user: User)
