@@ -6,9 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
@@ -17,13 +14,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.companion.data.UserDB
-import com.example.companion.ui.theme.theme.CompanionTheme
 import com.example.companion.ui.theme.IntroScreen
 import com.example.companion.ui.theme.LoginScreen
 import com.example.companion.ui.theme.SignUpScreen
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.example.companion.ui.theme.theme.CompanionTheme
 
 sealed class Destination(val route: String) {
     object Intro : Destination("Intro")

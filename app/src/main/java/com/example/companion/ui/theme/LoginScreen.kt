@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -34,7 +33,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -54,7 +52,6 @@ import com.example.companion.ui.theme.states.EmailState
 import com.example.companion.ui.theme.states.PasswordState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 @Composable
@@ -107,7 +104,6 @@ fun LoginContent(navController: NavController, database: UserDB) {
 
             val localFocusManager = LocalFocusManager.current
             val emailState = remember { EmailState() }
-            var loggedIn = remember { mutableStateOf(false) }
 
             Spacer(modifier = Modifier.padding(top = 40.dp))
             LoginEmail(
@@ -119,8 +115,7 @@ fun LoginContent(navController: NavController, database: UserDB) {
                 },
                 onImeAction = {
                     localFocusManager.moveFocus(FocusDirection.Down)
-                },
-                loggedIn = loggedIn
+                }
             )
             Spacer(modifier = Modifier.padding(vertical = 4.dp))
             val passwordState = remember { PasswordState() }
@@ -233,7 +228,6 @@ fun LoginEmail(
     error: String?,
     onEmailChanged: (String) -> Unit,
     onImeAction: () -> Unit,
-    loggedIn: MutableState<Boolean>
 ) {
     OutlinedTextField(
         value = email,
@@ -271,7 +265,6 @@ fun LoginEmail(
                 onImeAction()
             }
         ),
-        enabled = loggedIn.value,
         modifier = Modifier.fillMaxWidth(.9f)
     )
 
