@@ -12,7 +12,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.companion.ui.theme.CompanionTheme
+import com.example.companion.ui.theme.theme.CompanionTheme
+import com.example.companion.ui.theme.IntroScreen
+import com.example.companion.ui.theme.LoginScreen
+import com.example.companion.ui.theme.SignUpScreen
 
 sealed class Destination(val route: String) {
     object Intro : Destination("Intro")

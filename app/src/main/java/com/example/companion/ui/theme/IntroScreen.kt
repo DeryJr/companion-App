@@ -1,4 +1,4 @@
-package com.example.companion
+package com.example.companion.ui.theme
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +21,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.companion.Destination
+import com.example.companion.R
 
 @Composable
 fun IntroScreen(navController: NavController) {
@@ -82,7 +84,7 @@ fun IntroTopBar() {
                     .fillMaxWidth(.2f)
                     .height(4.dp)
                     .background(Color(0xFFFFDCDC), RoundedCornerShape(4.dp))
-                    .padding(start = 20.dp, end = 16.dp, top = 16.dp)
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp)
             )
         }
     }

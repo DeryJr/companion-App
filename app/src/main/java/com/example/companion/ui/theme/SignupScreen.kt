@@ -1,11 +1,12 @@
-package com.example.companion
+package com.example.companion.ui.theme
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,13 +22,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -36,6 +40,14 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.companion.R
+import com.example.companion.ui.theme.states.EmailState
+import com.example.companion.ui.theme.states.PasswordState
+
+// @Darijus, label na text fieldovima kad klikneš i ode gore se ne vidi
+// Pokušao sam da izmajmunišem nešto sa pozadinom ali mi ne da da idem to granica outTexFielda
+// Uglavnom, znam da je ružno...
+// Skontao neki fix ili ukini pozadinu skroz i promjeni boju texta, idk.
 
 @Composable
 fun SignUpScreen(navController: NavController) {
@@ -65,12 +77,42 @@ fun SignupContent(navController: NavController) {
         Spacer(modifier = Modifier.padding(top = 80.dp))
         SignupText()
         Spacer(modifier = Modifier.weight(1f))
-        Email()
-        Password()
+        val localFocusManager = LocalFocusManager.current
+        val emailState = remember { EmailState() }
+        Email(
+            emailState.text,
+            emailState.error,
+            onEmailChanged = {
+                emailState.text = it
+                emailState.validate()
+            },
+            onImeAction = {
+                localFocusManager.moveFocus(FocusDirection.Down)
+            }
+        )
+        Spacer(modifier = Modifier.padding(vertical = 4.dp))
+        val passwordState = remember { PasswordState() }
+        Password(
+            passwordState.text,
+            passwordState.error,
+            onPasswordChanged = {
+                passwordState.text = it
+                passwordState.validate()
+            },
+            onImeAction = {
+                localFocusManager.clearFocus()
+                if (emailState.isValid() && passwordState.isValid()) {
+                    signUp(emailState.text, passwordState.text)
+                }
+            }
+        )
         Spacer(modifier = Modifier.weight(1f))
-        SignupButton()
-
+        SignupButton(enabled = emailState.isValid() && passwordState.isValid())
     }
+}
+
+fun signUp(email: String, password: String) {
+    Log.d("TEST", "email $email, password $password")
 }
 
 @Composable
@@ -101,7 +143,7 @@ fun SignupTopBar() {
                     .fillMaxWidth(.2f)
                     .height(4.dp)
                     .background(Color(0xFFFFDCDC), RoundedCornerShape(4.dp))
-                    .padding(start = 20.dp, end = 16.dp, top = 16.dp)
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp)
             )
         }
     }
@@ -130,7 +172,7 @@ fun SignupText() {
                 withStyle(
                     style = SpanStyle(
                         color = Color(0xFFFFEAEA),
-                        fontSize = 32.sp,
+                        fontSize = 30.sp,
                         fontWeight = FontWeight.Bold,
                     )
                 ) {
@@ -144,60 +186,115 @@ fun SignupText() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Email() {
-
-    val emailState = remember { mutableStateOf("") }
-
+fun Email(
+    email: String,
+    error: String?,
+    onEmailChanged: (String) -> Unit,
+    onImeAction: () -> Unit
+) {
     OutlinedTextField(
-        value = emailState.value,
-        onValueChange = { emailState.value = it },
-        label = { Text(text = "email", color = Color(0xFF3C0101), fontWeight = FontWeight.Bold) },
-        placeholder = { Text(text = "smtn@stu.ibu.edu.ba", color = Color(0xFF3C0101)) },
+        value = email,
+        shape = RoundedCornerShape(16.dp),
+        onValueChange = { value -> onEmailChanged(value) },
+        label = {
+            Text(
+                text = "email",
+                color = Color(0xFF3C0101),
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .clip(shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp))
+                    .background(Color(0xFFFFB1B1))
+                    .padding(4.dp)
+            )
+        },
+        isError = error != null,
+        placeholder = { Text(text = "smtn@stu.ibu.edu.ba", color = Color(0x8C3C0101)) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             containerColor = Color(0xFFFFB1B1),
             textColor = Color(0xFF3C0101),
             cursorColor = Color(0xFF3C0101),
             unfocusedBorderColor = Color(0xFF521616),
             focusedBorderColor = Color(0xFF3C0101),
-            errorBorderColor = Color.Red,
+            errorBorderColor = Color(0xFFD60000),
+            errorCursorColor = Color(0xFFD60000),
+            errorLabelColor = Color(0xFFD60000),
         ),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = KeyboardType.Email,
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                onImeAction()
+            }
+        )
+    )
+
+    error?.let { ErrorField(it) }
+}
+
+@Composable
+fun ErrorField(error: String) {
+    Text(
+        text = error,
+        color = Color(0xFFD60000),
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color(0xC8FFB1B1))
+            .padding(4.dp)
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Password() {
+fun Password(
+    password: String,
+    error: String?,
+    onPasswordChanged: (String) -> Unit,
+    onImeAction: () -> Unit
+) {
 
-    val passwordState = remember { mutableStateOf("") }
     val showPassword = remember { mutableStateOf(false) }
 
-
     OutlinedTextField(
-        value = passwordState.value,
-        onValueChange = { passwordState.value = it },
+        value = password,
+        shape = RoundedCornerShape(16.dp),
+        onValueChange = { value -> onPasswordChanged(value) },
         label = {
             Text(
                 text = "password",
                 color = Color(0xFF3C0101),
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .clip(shape = RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp))
+                    .background(Color(0xFFFFB1B1))
+                    .padding(4.dp)
             )
         },
-        placeholder = { Text(text = "******", color = Color(0xFF3C0101)) },
+        placeholder = { Text(text = "....", color = Color(0x8C3C0101)) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             containerColor = Color(0xFFFFB1B1),
             textColor = Color(0xFF3C0101),
             cursorColor = Color(0xFF3C0101),
             unfocusedBorderColor = Color(0xFF521616),
             focusedBorderColor = Color(0xFF3C0101),
-            errorBorderColor = Color.Red
+            errorBorderColor = Color(0xFFD60000),
+            errorCursorColor = Color(0xFFD60000),
+            errorLabelColor = Color(0xFFD60000),
         ),
         visualTransformation = if (showPassword.value) {
             VisualTransformation.None
         } else {
             PasswordVisualTransformation()
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = KeyboardType.Password,
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(onDone = {
+            onImeAction()
+        }),
         trailingIcon = {
             if (showPassword.value) {
                 IconButton(onClick = { showPassword.value = false }) {
@@ -216,16 +313,20 @@ fun Password() {
                     )
                 }
             }
-        }
+        },
+        isError = error != null
     )
+
+    error?.let { ErrorField(error = it) }
 }
 
 @Composable
-fun SignupButton() {
+fun SignupButton(enabled: Boolean) {
     Button(
         onClick = { },
         modifier = Modifier.fillMaxWidth(.6f),
-        colors = ButtonDefaults.buttonColors(Color(0xFFFFB1B1))
+        colors = ButtonDefaults.buttonColors(Color(0xFFFFB1B1)),
+        enabled = enabled
     ) {
         Text(
             text = "Sign Up",

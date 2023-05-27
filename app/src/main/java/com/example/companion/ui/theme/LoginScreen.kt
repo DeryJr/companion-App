@@ -1,4 +1,4 @@
-package com.example.companion
+package com.example.companion.ui.theme
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
