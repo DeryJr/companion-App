@@ -16,7 +16,7 @@ interface UserDao {
     fun getUser(id: Int): Flow<User>
 
     @Query("SELECT * FROM user WHERE email = :email")
-    fun getUserByEmail(email: String)
+    fun getUserByEmail(email: String): Flow<User>
 
     @Upsert suspend fun updateUser(user: User)
 
