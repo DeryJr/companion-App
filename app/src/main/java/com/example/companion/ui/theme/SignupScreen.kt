@@ -4,19 +4,26 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialogDefaults.containerColor
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -210,7 +217,6 @@ fun SignupText() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Email(
     email: String,
@@ -235,16 +241,19 @@ fun Email(
         },
         isError = error != null,
         placeholder = { Text(text = "smtn@stu.ibu.edu.ba", color = Color(0x8C3C0101)) },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            containerColor = Color(0xFFFFB1B1),
-            cursorColor = Color(0xFF3C0101),
-            errorContainerColor = Color(0xFFFF9595),
+        colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = Color(0xFF3C0101),
+            unfocusedTextColor = Color(0xFF3C0101),
             errorTextColor = Color(0xFF5E0000),
-            unfocusedBorderColor = Color(0xFF521616),
-            focusedBorderColor = Color(0xFF3C0101),
-            errorBorderColor = Color(0xFFD60000),
+            focusedContainerColor =  Color(0xFFFFB1B1),
+            unfocusedContainerColor =  Color(0xFFFFB1B1),
+            disabledContainerColor = containerColor,
+            errorContainerColor = Color(0xFFFF9595),
+            cursorColor = Color(0xFF3C0101),
             errorCursorColor = Color(0xFFD60000),
+            focusedBorderColor = Color(0xFF3C0101),
+            unfocusedBorderColor = Color(0xFF521616),
+            errorBorderColor = Color(0xFFD60000),
             errorLabelColor = Color(0xFFD60000),
         ),
         keyboardOptions = KeyboardOptions.Default.copy(
@@ -275,7 +284,6 @@ fun ErrorField(error: String) {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Password(
     password: String,
@@ -302,16 +310,19 @@ fun Password(
             )
         },
         placeholder = { Text(text = "....", color = Color(0x8C3C0101)) },
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            containerColor = Color(0xFFFFB1B1),
-            cursorColor = Color(0xFF3C0101),
+        colors = OutlinedTextFieldDefaults.colors(
             focusedTextColor = Color(0xFF3C0101),
+            unfocusedTextColor = Color(0xFF3C0101),
             errorTextColor = Color(0xFF5E0000),
+            focusedContainerColor =  Color(0xFFFFB1B1),
+            unfocusedContainerColor =  Color(0xFFFFB1B1),
+            disabledContainerColor = containerColor,
             errorContainerColor = Color(0xFFFF9595),
-            unfocusedBorderColor = Color(0xFF521616),
-            focusedBorderColor = Color(0xFF3C0101),
-            errorBorderColor = Color(0xFFD60000),
+            cursorColor = Color(0xFF3C0101),
             errorCursorColor = Color(0xFFD60000),
+            focusedBorderColor = Color(0xFF3C0101),
+            unfocusedBorderColor = Color(0xFF521616),
+            errorBorderColor = Color(0xFFD60000),
             errorLabelColor = Color(0xFFD60000),
         ),
         visualTransformation = if (showPassword.value) {
