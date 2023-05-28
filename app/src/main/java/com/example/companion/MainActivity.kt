@@ -4,23 +4,38 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Scaffold
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.companion.ui.theme.theme.CompanionTheme
+import kotlinx.coroutines.launch
+
+
+sealed class Destinations(val route: String) {
+    object Home : Destinations("home")
+    object Detail : Destinations("detail")
+    object Map : Destinations("map")
+    object Hotels : Destinations("hotels")
+    object Flights : Destinations("flights")
+    object Guides: Destinations("guides")
+
+}
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        onBackPressedDispatcher.addCallback(this, object: OnBackPressedCallback(true) {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 moveTaskToBack(true)
             }
@@ -32,7 +47,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.White,
                 ) {
-                    Test()
+                    val navController = rememberNavController()
+                    CompanionScaffold(navController = navController)
                 }
             }
         }
@@ -40,11 +56,43 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Test() {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Main activity", fontSize = 50.sp, fontWeight = FontWeight.Bold)
+fun CompanionScaffold(navController: NavHostController) {
+
+    val scope = rememberCoroutineScope()
+    val scaffoldState = rememberScaffoldState()
+    val onDrawerIconClick: () -> Unit = {
+        scope.launch { scaffoldState.drawerState.open() }
+    }
+
+    Scaffold(
+        scaffoldState = scaffoldState,
+        bottomBar = { BottomNav(navController) },
+        topBar = { TopNav(navController = navController, onDrawerIconClick)},
+        drawerContent = { NavigationDrawer() }
+    ) { paddingValues ->
+            Modifier
+                .padding(bottom = paddingValues.calculateBottomPadding())
+                .background(Color(0xffcccccc))
+
+        NavHost(navController = navController, startDestination = Destinations.Home.route) {
+            composable(Destinations.Home.route) {
+                HomePageScreen(navController = navController)
+            }
+            composable(Destinations.Map.route) {
+                // TODO
+            }
+            composable(Destinations.Detail.route) {
+                // TODO
+            }
+            composable(Destinations.Flights.route) {
+                // TODO
+            }
+            composable(Destinations.Hotels.route) {
+                // TODO
+            }
+            composable(Destinations.Guides.route) {
+                // TODO
+            }
+        }
     }
 }

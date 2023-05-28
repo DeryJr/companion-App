@@ -81,7 +81,11 @@ fun SignupBackgroundImage() {
 }
 
 @Composable
-fun SignupContent(navController: NavController, database: UserDB, showToast: MutableState<Boolean>) {
+fun SignupContent(
+    navController: NavController,
+    database: UserDB,
+    showToast: MutableState<Boolean>
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -357,13 +361,15 @@ fun SignupButton(
         onClick = {
             val user = User(email = email, password = password)
             CoroutineScope(Dispatchers.IO).launch {
-            if (database.userDao().getUserByEmail(email) == user.email) {
-                showToast.value = true
-            } else {
+                if (database.userDao().getUserByEmail(email) == user.email && database.userDao()
+                        .getUserByPassword(password) == user.password
+                ) {
+                    showToast.value = true
+                } else {
 
-                database.userDao().updateUser(user)
+                    database.userDao().updateUser(user)
 
-            }
+                }
                 // val user = database.userDao().getUserByEmail(email)
 //                for (i in 0..5) {
 //                    val user = database.userDao().getUser(i).firstOrNull()

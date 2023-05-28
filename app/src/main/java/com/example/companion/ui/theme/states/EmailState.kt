@@ -2,7 +2,7 @@ package com.example.companion.ui.theme.states
 
 import java.util.regex.Pattern
 
-private const val EMAIL_VALIDATION_REGEX = "^(.+)@(.+)\$"
+private const val EMAIL_VALIDATION_REGEX = "^[a-zA-Z0-9.!#\$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*\$"
 
 class EmailState : TextFieldState(
     validator = ::isEmailValid,

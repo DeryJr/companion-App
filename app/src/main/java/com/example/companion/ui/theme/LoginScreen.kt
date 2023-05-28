@@ -429,7 +429,9 @@ fun LoginButton(
             onClick = {
                 val user = User(email = email, password = password)
                 CoroutineScope(Dispatchers.IO).launch {
-                    if (database.userDao().getUserByEmail(email) == user.email) {
+                    if (database.userDao().getUserByEmail(email) == user.email && database.userDao()
+                            .getUserByPassword(password) == user.password
+                    ) {
                         val mainActivityIntent = Intent(ctx, MainActivity::class.java)
                         ctx.startActivity(mainActivityIntent)
                     } else {
