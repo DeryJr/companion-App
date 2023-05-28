@@ -237,8 +237,10 @@ fun Email(
         placeholder = { Text(text = "smtn@stu.ibu.edu.ba", color = Color(0x8C3C0101)) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             containerColor = Color(0xFFFFB1B1),
-            textColor = Color(0xFF3C0101),
             cursorColor = Color(0xFF3C0101),
+            errorContainerColor = Color(0xFFFF9595),
+            focusedTextColor = Color(0xFF3C0101),
+            errorTextColor = Color(0xFF5E0000),
             unfocusedBorderColor = Color(0xFF521616),
             focusedBorderColor = Color(0xFF3C0101),
             errorBorderColor = Color(0xFFD60000),
@@ -302,8 +304,10 @@ fun Password(
         placeholder = { Text(text = "....", color = Color(0x8C3C0101)) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             containerColor = Color(0xFFFFB1B1),
-            textColor = Color(0xFF3C0101),
             cursorColor = Color(0xFF3C0101),
+            focusedTextColor = Color(0xFF3C0101),
+            errorTextColor = Color(0xFF5E0000),
+            errorContainerColor = Color(0xFFFF9595),
             unfocusedBorderColor = Color(0xFF521616),
             focusedBorderColor = Color(0xFF3C0101),
             errorBorderColor = Color(0xFFD60000),

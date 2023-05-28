@@ -31,7 +31,6 @@ fun BottomNav(navController: NavController) {
                     painter = painterResource(id = R.drawable.ic_home_white),
                     contentDescription = null,
                     modifier = Modifier
-                        .padding(8.dp)
                         .clip(CircleShape)
                         .background(Color(0xFFFF9800))
                         .width(50.dp)
@@ -53,8 +52,8 @@ fun BottomNav(navController: NavController) {
             },
         )
         BottomNavigationItem(
-            selected = currentDestination?.route == Destinations.Guides.route,
-            onClick = { navController.navigate(Destinations.Guides.route) },
+            selected = currentDestination?.route == Destinations.Hotels.route,
+            onClick = { navController.navigate(Destinations.Hotels.route) },
             icon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_bed),
@@ -76,8 +75,8 @@ fun BottomNav(navController: NavController) {
                     modifier = Modifier
                         .clip(CircleShape)
                         .background(Color(0xFFFF9800))
-                        .width(50.dp)
-                        .height(50.dp)
+                        .width(45.dp)
+                        .height(45.dp)
                 )
             },
         )

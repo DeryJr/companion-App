@@ -12,7 +12,7 @@ import androidx.navigation.NavController
 @Composable
 fun TopNav(navController: NavController, onDrawerIconClick: () -> Unit) {
     TopAppBar(
-        title = { Text(text = "Scaffold navigation") },
+        title = { Text(text = "Companion") },
         navigationIcon = {
             IconButton(onClick = onDrawerIconClick) {
                 Icon(Icons.Default.Menu, contentDescription = null)

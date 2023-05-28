@@ -28,7 +28,7 @@ sealed class Destinations(val route: String) {
     object Map : Destinations("map")
     object Hotels : Destinations("hotels")
     object Flights : Destinations("flights")
-    object Guides: Destinations("guides")
+    object Guides : Destinations("guides")
 
 }
 
@@ -67,31 +67,31 @@ fun CompanionScaffold(navController: NavHostController) {
     Scaffold(
         scaffoldState = scaffoldState,
         bottomBar = { BottomNav(navController) },
-        topBar = { TopNav(navController = navController, onDrawerIconClick)},
+        topBar = { TopNav(navController = navController, onDrawerIconClick) },
         drawerContent = { NavigationDrawer() }
     ) { paddingValues ->
-            Modifier
-                .padding(bottom = paddingValues.calculateBottomPadding())
-                .background(Color(0xffcccccc))
+        Modifier
+            .padding(bottom = paddingValues.calculateBottomPadding())
+            .background(Color(0xffcccccc))
 
         NavHost(navController = navController, startDestination = Destinations.Home.route) {
             composable(Destinations.Home.route) {
                 HomePageScreen(navController = navController)
             }
             composable(Destinations.Map.route) {
-                // TODO
+                MapScreen(navController)
             }
             composable(Destinations.Detail.route) {
-                // TODO
+                DetailsScreen(navController = navController)
             }
             composable(Destinations.Flights.route) {
-                // TODO
+                FlightsScreen(navController = navController)
             }
             composable(Destinations.Hotels.route) {
-                // TODO
+                HotelScreen(navController = navController)
             }
             composable(Destinations.Guides.route) {
-                // TODO
+                GuideScreen(navController = navController)
             }
         }
     }
