@@ -6,6 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavHostController
@@ -42,11 +45,12 @@ class IntroActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.Black
                 ) {
-
+                    val showToast = remember { mutableStateOf(false) }
                     val navController = rememberNavController()
                     Intro(
                         navController = navController,
                         database,
+                        showToast
                     )
                 }
             }
@@ -58,7 +62,7 @@ class IntroActivity : ComponentActivity() {
 fun Intro(
     navController: NavHostController,
     database: UserDB,
-
+    showToast: MutableState<Boolean>
 ) {
 
     NavHost(navController = navController, startDestination = Destination.Intro.route) {
@@ -66,13 +70,15 @@ fun Intro(
         composable(Destination.Signup.route) {
             SignUpScreen(
                 navController = navController,
-                database = database
+                database = database,
+                showToast = showToast
             )
         }
         composable(Destination.Login.route) {
             LoginScreen(
                 navController = navController,
-                database = database
+                database = database,
+                showToast
             )
         }
     }

@@ -1,6 +1,7 @@
 package com.example.companion.ui.theme
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,6 +18,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -59,10 +63,11 @@ import kotlinx.coroutines.launch
 fun SignUpScreen(
     navController: NavController,
     database: UserDB,
+    showToast: MutableState<Boolean>
 ) {
 
     SignupBackgroundImage()
-    SignupContent(navController = navController, database = database)
+    SignupContent(navController = navController, database = database, showToast = showToast)
 }
 
 @Composable
@@ -76,7 +81,7 @@ fun SignupBackgroundImage() {
 }
 
 @Composable
-fun SignupContent(navController: NavController, database: UserDB) {
+fun SignupContent(navController: NavController, database: UserDB, showToast: MutableState<Boolean>) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -122,7 +127,8 @@ fun SignupContent(navController: NavController, database: UserDB) {
             email = emailState.text,
             password = passwordState.text,
             database = database,
-            navController = navController
+            navController = navController,
+            showToast
         )
     }
 }
@@ -344,17 +350,30 @@ fun SignupButton(
     email: String,
     password: String,
     database: UserDB,
-    navController: NavController
+    navController: NavController,
+    showToast: MutableState<Boolean>
 ) {
     Button(
         onClick = {
-            val user = User(0, email = email, password = password)
+            val user = User(email = email, password = password)
             CoroutineScope(Dispatchers.IO).launch {
+            if (database.userDao().getUserByEmail(email) == user.email) {
+                showToast.value = true
+            } else {
+
                 database.userDao().updateUser(user)
-//                val user = database.userDao().getUser(1).firstOrNull()
-//                user?.let {
-//                    database.userDao().deleteUser(user)
+
+            }
+                // val user = database.userDao().getUserByEmail(email)
+//                for (i in 0..5) {
+//                    val user = database.userDao().getUser(i).firstOrNull()
+//                    user?.let {
+//                        database.userDao().deleteUser(user)
+//                    }
 //                }
+
+                // database.userDao().updateUser(user)
+
             }
         },
         modifier = Modifier.fillMaxWidth(.6f),
@@ -410,5 +429,18 @@ fun SignupButton(
             color = Color(0xFFFFB1B1),
             fontSize = 20.sp
         )
+    }
+
+    ShowToast(message = "User already exists, please log in", showToast = showToast)
+}
+
+@Composable
+fun ShowToast(message: String, showToast: MutableState<Boolean>) {
+    if (showToast.value) {
+        val ctx = LocalContext.current
+        LaunchedEffect(Unit) {
+            Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
+        }
+        showToast.value = !showToast.value
     }
 }

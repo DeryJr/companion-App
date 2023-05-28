@@ -1,5 +1,6 @@
 package com.example.companion.ui.theme
 
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.companion.Destination
+import com.example.companion.MainActivity
 import com.example.companion.R
 import com.example.companion.data.User
 import com.example.companion.data.UserDB
@@ -58,8 +62,9 @@ import kotlinx.coroutines.launch
 fun LoginScreen(
     navController: NavController,
     database: UserDB,
+    showToast: MutableState<Boolean>
 ) {
-    LoginContent(navController = navController, database = database)
+    LoginContent(navController = navController, database = database, showToast = showToast)
 }
 
 @Composable
@@ -73,7 +78,7 @@ fun LoginBackgroundImage() {
 }
 
 @Composable
-fun LoginContent(navController: NavController, database: UserDB) {
+fun LoginContent(navController: NavController, database: UserDB, showToast: MutableState<Boolean>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -140,7 +145,8 @@ fun LoginContent(navController: NavController, database: UserDB) {
                 email = emailState.text,
                 password = passwordState.text,
                 database = database,
-                navController = navController
+                navController = navController,
+                showToast = showToast
             )
 
         }
@@ -290,7 +296,7 @@ fun LoginPassword(
     password: String,
     error: String?,
     onPasswordChanged: (String) -> Unit,
-    onImeAction: () -> Unit
+    onImeAction: () -> Unit,
 ) {
 
     val showPassword = remember { mutableStateOf(false) }
@@ -365,8 +371,12 @@ fun LoginButton(
     email: String,
     password: String,
     database: UserDB,
-    navController: NavController
+    navController: NavController,
+    showToast: MutableState<Boolean>
 ) {
+
+    val ctx = LocalContext.current
+
     TextButton(onClick = { /*TODO*/ }) {
         Text(text = "Forgot Password?", color = Color(0xFF3C0101), fontWeight = FontWeight.Bold)
     }
@@ -419,7 +429,13 @@ fun LoginButton(
             onClick = {
                 val user = User(email = email, password = password)
                 CoroutineScope(Dispatchers.IO).launch {
-                    database.userDao().updateUser(user)
+                    if (database.userDao().getUserByEmail(email) == user.email) {
+                        val mainActivityIntent = Intent(ctx, MainActivity::class.java)
+                        ctx.startActivity(mainActivityIntent)
+                    } else {
+                        showToast.value = true
+                    }
+
 //                val user = database.userDao().getUser(4).firstOrNull()
 //                user?.let {
 //                    database.userDao().deleteUser(user)
@@ -459,4 +475,5 @@ fun LoginButton(
         }
 
     }
+    ShowToast(message = "User does not exist, please sign up", showToast = showToast)
 }
