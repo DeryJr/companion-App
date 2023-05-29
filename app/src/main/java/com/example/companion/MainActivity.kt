@@ -3,6 +3,7 @@ package com.example.companion
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +12,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -62,6 +65,39 @@ fun CompanionScaffold(navController: NavHostController) {
     val scaffoldState = rememberScaffoldState()
     val onDrawerIconClick: () -> Unit = {
         scope.launch { scaffoldState.drawerState.open() }
+    }
+
+    val backCallback = remember {
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val currentRoute = navController.currentBackStackEntry?.destination?.route
+                val homeRoute = Destinations.Home.route
+                val detailRoute = Destinations.Detail.route
+
+                if (currentRoute != homeRoute && currentRoute != detailRoute) {
+                    // Navigate back to Home screen if not on Home or Details screen
+                    navController.popBackStack(homeRoute, inclusive = false)
+                } else if (currentRoute == detailRoute) {
+                    // If on Details screen, navigate back to Home screen
+                    navController.navigate(homeRoute) {
+                        popUpTo(homeRoute) {
+                            inclusive = true
+                        }
+                    }
+                } else {
+                    // Double press back within a certain timeout to exit the app
+                    // Implement your desired behavior here (e.g., show a toast, prompt for confirmation)
+                }
+            }
+        }
+    }
+
+    val backPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    DisposableEffect(backPressedDispatcher) {
+        backPressedDispatcher?.addCallback(backCallback)
+        onDispose {
+            backCallback.remove()
+        }
     }
 
     Scaffold(

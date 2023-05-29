@@ -10,12 +10,14 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -24,7 +26,6 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePageScreen(navController: NavController) {
-
     val text = remember { mutableStateOf("") }
     val active = remember { mutableStateOf(false) }
     val items = remember {
@@ -35,7 +36,13 @@ fun HomePageScreen(navController: NavController) {
     }
 
     SearchBar(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .padding(top = 30.dp),
+        colors = SearchBarDefaults.colors(
+         containerColor = Color(0xFFEEEEEE)
+        ),
         query = text.value,
         onQueryChange = { text.value = it },
         onSearch = {
@@ -47,11 +54,12 @@ fun HomePageScreen(navController: NavController) {
         onActiveChange = {
             active.value = it
         },
-        placeholder = { Text(text = "Search") },
+        placeholder = { Text(text = "Search", color = Color.Black) },
         leadingIcon = {
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = stringResource(id = R.string.search)
+                contentDescription = stringResource(id = R.string.search),
+                tint = Color.Black
             )
         },
         trailingIcon = {
