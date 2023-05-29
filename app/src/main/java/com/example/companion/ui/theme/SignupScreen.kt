@@ -29,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,24 +58,26 @@ import com.example.companion.data.User
 import com.example.companion.data.UserDB
 import com.example.companion.ui.theme.states.EmailState
 import com.example.companion.ui.theme.states.PasswordState
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-// @Darijus, label na text fieldovima kad klikneš i ode gore se ne vidi
-// Pokušao sam da izmajmunišem nešto sa pozadinom ali mi ne da da idem to granica outTexFielda
-// Uglavnom, znam da je ružno...
-// Skontao neki fix ili ukini pozadinu skroz i promjeni boju texta, idk.
 
 @Composable
 fun SignUpScreen(
     navController: NavController,
     database: UserDB,
-    showToast: MutableState<Boolean>
+    showToast: MutableState<Boolean>,
+    showSuccess: MutableState<Boolean>
 ) {
 
     SignupBackgroundImage()
-    SignupContent(navController = navController, database = database, showToast = showToast)
+    SignupContent(
+        navController = navController,
+        database = database,
+        showToast = showToast,
+        showSuccess = showSuccess
+    )
 }
 
 @Composable
@@ -91,7 +94,8 @@ fun SignupBackgroundImage() {
 fun SignupContent(
     navController: NavController,
     database: UserDB,
-    showToast: MutableState<Boolean>
+    showToast: MutableState<Boolean>,
+    showSuccess: MutableState<Boolean>
 ) {
     Column(
         modifier = Modifier
@@ -139,7 +143,8 @@ fun SignupContent(
             password = passwordState.text,
             database = database,
             navController = navController,
-            showToast
+            showToast = showToast,
+            showSuccess = showSuccess
         )
     }
 }
@@ -245,8 +250,8 @@ fun Email(
             focusedTextColor = Color(0xFF3C0101),
             unfocusedTextColor = Color(0xFF3C0101),
             errorTextColor = Color(0xFF5E0000),
-            focusedContainerColor =  Color(0xFFFFB1B1),
-            unfocusedContainerColor =  Color(0xFFFFB1B1),
+            focusedContainerColor = Color(0xFFFFB1B1),
+            unfocusedContainerColor = Color(0xFFFFB1B1),
             disabledContainerColor = containerColor,
             errorContainerColor = Color(0xFFFF9595),
             cursorColor = Color(0xFF3C0101),
@@ -314,8 +319,8 @@ fun Password(
             focusedTextColor = Color(0xFF3C0101),
             unfocusedTextColor = Color(0xFF3C0101),
             errorTextColor = Color(0xFF5E0000),
-            focusedContainerColor =  Color(0xFFFFB1B1),
-            unfocusedContainerColor =  Color(0xFFFFB1B1),
+            focusedContainerColor = Color(0xFFFFB1B1),
+            unfocusedContainerColor = Color(0xFFFFB1B1),
             disabledContainerColor = containerColor,
             errorContainerColor = Color(0xFFFF9595),
             cursorColor = Color(0xFF3C0101),
@@ -370,31 +375,29 @@ fun SignupButton(
     password: String,
     database: UserDB,
     navController: NavController,
-    showToast: MutableState<Boolean>
+    showToast: MutableState<Boolean>,
+    showSuccess: MutableState<Boolean>
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     Button(
         onClick = {
-            val user = User(email = email, password = password)
-            CoroutineScope(Dispatchers.IO).launch {
-                if (database.userDao().getUserByEmail(email) == user.email && database.userDao()
-                        .getUserByPassword(password) == user.password
-                ) {
-                    showToast.value = true
-                } else {
-
-                    database.userDao().updateUser(user)
-
+            coroutineScope.launch {
+                try {
+                    val user = User(email = email, password = password)
+                    withContext(Dispatchers.IO) {
+                        if (database.userDao().getUserByEmail(email) == email &&
+                            database.userDao().getUserByPassword(password) == password
+                        ) {
+                            showToast.value = true
+                        } else {
+                            database.userDao().updateUser(user)
+                            showSuccess.value = true
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
-                // val user = database.userDao().getUserByEmail(email)
-//                for (i in 0..5) {
-//                    val user = database.userDao().getUser(i).firstOrNull()
-//                    user?.let {
-//                        database.userDao().deleteUser(user)
-//                    }
-//                }
-
-                // database.userDao().updateUser(user)
-
             }
         },
         modifier = Modifier.fillMaxWidth(.6f),
@@ -452,16 +455,38 @@ fun SignupButton(
         )
     }
 
-    ShowToast(message = "User already exists, please log in", showToast = showToast)
+    ShowToast(
+        message = "User already exists, please log in",
+        showToast = showToast,
+    )
+
+    ShowSuccessToast(message = "Successful signup, proceed to login", showSuccess = showSuccess)
 }
 
 @Composable
-fun ShowToast(message: String, showToast: MutableState<Boolean>) {
+fun ShowToast(
+    message: String,
+    showToast: MutableState<Boolean>,
+) {
     if (showToast.value) {
         val ctx = LocalContext.current
         LaunchedEffect(Unit) {
             Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
         }
         showToast.value = !showToast.value
+    }
+}
+
+@Composable
+fun ShowSuccessToast(
+    message: String,
+    showSuccess: MutableState<Boolean>
+) {
+    if (showSuccess.value) {
+        val ctx = LocalContext.current
+        LaunchedEffect(Unit) {
+            Toast.makeText(ctx, message, Toast.LENGTH_SHORT).show()
+        }
+        showSuccess.value = !showSuccess.value
     }
 }

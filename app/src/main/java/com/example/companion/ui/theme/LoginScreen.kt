@@ -71,7 +71,7 @@ import kotlinx.coroutines.launch
 fun LoginScreen(
     navController: NavController,
     database: UserDB,
-    showToast: MutableState<Boolean>
+    showToast: MutableState<Boolean>,
 ) {
     LoginContent(navController = navController, database = database, showToast = showToast)
 }

@@ -46,11 +46,13 @@ class IntroActivity : ComponentActivity() {
                     color = Color.Black
                 ) {
                     val showToast = remember { mutableStateOf(false) }
+                    val showSuccess = remember { mutableStateOf(false) }
                     val navController = rememberNavController()
                     Intro(
                         navController = navController,
                         database,
-                        showToast
+                        showToast,
+                        showSuccess
                     )
                 }
             }
@@ -62,7 +64,8 @@ class IntroActivity : ComponentActivity() {
 fun Intro(
     navController: NavHostController,
     database: UserDB,
-    showToast: MutableState<Boolean>
+    showToast: MutableState<Boolean>,
+    showSuccess: MutableState<Boolean>
 ) {
 
     NavHost(navController = navController, startDestination = Destination.Intro.route) {
@@ -71,14 +74,15 @@ fun Intro(
             SignUpScreen(
                 navController = navController,
                 database = database,
-                showToast = showToast
+                showToast = showToast,
+                showSuccess
             )
         }
         composable(Destination.Login.route) {
             LoginScreen(
                 navController = navController,
                 database = database,
-                showToast
+                showToast,
             )
         }
     }
