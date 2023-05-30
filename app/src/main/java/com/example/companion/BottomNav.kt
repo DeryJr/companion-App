@@ -28,8 +28,6 @@ fun BottomNav(navController: NavController) {
             .fillMaxWidth()
             .fillMaxHeight(.13f),
         cutoutShape = RoundedCornerShape(12.dp),
-
-
     ) {
         val navBackStackEntry = navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry.value?.destination
@@ -52,14 +50,15 @@ fun BottomNav(navController: NavController) {
                         .clip(CircleShape)
                         .width(40.dp)
                         .height(40.dp)
-                        .background(Color(0xFFFFA622))
-                        .padding(8.dp)
-                        .width(40.dp)
-                        .height(40.dp),
-                    tint = Color.White
+                        .background(
+                            if (currentDestination?.route == Destinations.Home.route) Color(
+                                0xFFFFA622
+                            ) else Color.Transparent
+                        )
+                        .padding(8.dp),
+                    tint = if (currentDestination?.route == Destinations.Home.route) Color.White else Color.Black
                 )
             }
-
         )
         BottomNavigationItem(
             selected = currentDestination?.route == Destinations.Map.route,
@@ -76,10 +75,18 @@ fun BottomNav(navController: NavController) {
                     contentDescription = null,
                     modifier = Modifier
                         .padding(top = 20.dp)
-                        .width(30.dp)
-                        .height(30.dp)
+                        .clip(CircleShape)
+                        .width(40.dp)
+                        .height(40.dp)
+                        .background(
+                            if (currentDestination?.route == Destinations.Map.route) Color(
+                                0xFFFFA622
+                            ) else Color.Transparent
+                        )
+                        .padding(8.dp),
+                    tint = (if (currentDestination?.route == Destinations.Map.route) Color.White else Color.Black)
                 )
-            },
+            }
         )
         BottomNavigationItem(
             selected = currentDestination?.route == Destinations.Hotels.route,
@@ -96,11 +103,18 @@ fun BottomNav(navController: NavController) {
                     contentDescription = null,
                     modifier = Modifier
                         .padding(top = 20.dp)
-                        .padding(top = 5.dp)
-                        .width(30.dp)
-                        .height(30.dp)
+                        .clip(CircleShape)
+                        .width(40.dp)
+                        .height(40.dp)
+                        .background(
+                            if (currentDestination?.route == Destinations.Hotels.route) Color(
+                                0xFFFFA622
+                            ) else Color.Transparent
+                        )
+                        .padding(8.dp),
+                    tint = (if (currentDestination?.route == Destinations.Hotels.route) Color.White else Color.Black)
                 )
-            },
+            }
         )
         BottomNavigationItem(
             selected = currentDestination?.route == Destinations.Guides.route,
@@ -120,15 +134,16 @@ fun BottomNav(navController: NavController) {
                         .clip(RoundedCornerShape(8.dp))
                         .fillMaxWidth()
                         .fillMaxHeight(.6f)
-                        .background(Color(0xFFFFA622))
-                        .padding(6.dp)
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
-                    tint = Color.White
+                        .background(
+                            if (currentDestination?.route == Destinations.Guides.route) Color(
+                                0xFFFFA622
+                            ) else Color.Transparent
+                        )
+                        .padding(6.dp),
+                    tint = if (currentDestination?.route == Destinations.Guides.route) Color.White else Color.Black
                 )
             }
         )
-
         BottomNavigationItem(
             selected = currentDestination?.route == Destinations.Flights.route,
             onClick = {
@@ -144,11 +159,18 @@ fun BottomNav(navController: NavController) {
                     contentDescription = null,
                     modifier = Modifier
                         .padding(top = 20.dp)
-                        .width(25.dp)
-                        .height(25.dp)
+                        .clip(CircleShape)
+                        .width(40.dp)
+                        .height(40.dp)
+                        .background(
+                            if (currentDestination?.route == Destinations.Flights.route) Color(
+                                0xFFFFA622
+                            ) else Color.Transparent
+                        )
+                        .padding(8.dp),
+                    tint = (if (currentDestination?.route == Destinations.Flights.route) Color.White else Color.Black)
                 )
-            },
+            }
         )
     }
 }
-
