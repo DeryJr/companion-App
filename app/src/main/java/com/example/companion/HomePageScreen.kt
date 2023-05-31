@@ -12,6 +12,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -41,7 +42,12 @@ fun HomePageScreen(navController: NavController) {
             .padding(16.dp)
             .padding(top = 30.dp),
         colors = SearchBarDefaults.colors(
-         containerColor = Color(0xFFEEEEEE)
+            containerColor = Color(0xFFEEEEEE),
+            inputFieldColors = TextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.LightGray,
+                disabledTextColor = Color.DarkGray,
+            )
         ),
         query = text.value,
         onQueryChange = { text.value = it },
@@ -83,9 +89,9 @@ fun HomePageScreen(navController: NavController) {
                 Icon(
                     modifier = Modifier.padding(end = 10.dp),
                     painter = painterResource(id = R.drawable.ic_history),
-                    contentDescription = "stringResource(id = R.string.history)"
+                    contentDescription = stringResource(id = R.string.history)
                 )
-                Text(text = it)
+                Text(text = it, color = Color.Black)
             }
         }
     }
