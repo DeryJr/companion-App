@@ -4,13 +4,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberMarkerState
 
 @Composable
 fun MapScreen(navController: NavController) {
@@ -29,9 +30,11 @@ fun MapScreen(navController: NavController) {
         )
     ) {
         Marker(
-            state = MarkerState(position = hadzici),
+            state = rememberMarkerState(position = hadzici),
+            draggable = true,
             title = "Hadžići",
-            snippet = "Marker in Hadžići"
+            snippet = "Marker in Hadžići",
+            icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)
         )
     }
 }
