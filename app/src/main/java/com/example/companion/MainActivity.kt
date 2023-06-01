@@ -32,7 +32,6 @@ sealed class Destinations(val route: String) {
     object Hotels : Destinations("hotels")
     object Flights : Destinations("flights")
     object Guides : Destinations("guides")
-
 }
 
 class MainActivity : ComponentActivity() {
@@ -51,7 +50,9 @@ class MainActivity : ComponentActivity() {
                     color = Color.White,
                 ) {
                     val navController = rememberNavController()
-                    CompanionScaffold(navController = navController)
+                    CompanionScaffold(
+                        navController = navController,
+                    )
                 }
             }
         }
@@ -59,12 +60,16 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CompanionScaffold(navController: NavHostController) {
+fun CompanionScaffold(
+    navController: NavHostController,
+) {
 
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
     val onDrawerIconClick: () -> Unit = {
-        scope.launch { scaffoldState.drawerState.open() }
+        scope.launch {
+            scaffoldState.drawerState.open()
+        }
     }
 
     val backCallback = remember {
@@ -105,7 +110,7 @@ fun CompanionScaffold(navController: NavHostController) {
         bottomBar = { BottomNav(navController) },
         topBar = { TopNav(navController = navController, onDrawerIconClick) },
         drawerContent = { NavigationDrawer() },
-        drawerGesturesEnabled = false,
+        drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
     ) { paddingValues ->
         Modifier
             .padding(bottom = paddingValues.calculateBottomPadding())
