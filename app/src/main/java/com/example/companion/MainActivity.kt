@@ -104,7 +104,8 @@ fun CompanionScaffold(navController: NavHostController) {
         scaffoldState = scaffoldState,
         bottomBar = { BottomNav(navController) },
         topBar = { TopNav(navController = navController, onDrawerIconClick) },
-        drawerContent = { NavigationDrawer() }
+        drawerContent = { NavigationDrawer() },
+        drawerGesturesEnabled = false,
     ) { paddingValues ->
         Modifier
             .padding(bottom = paddingValues.calculateBottomPadding())

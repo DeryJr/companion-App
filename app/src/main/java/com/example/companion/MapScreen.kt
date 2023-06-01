@@ -1,20 +1,37 @@
 package com.example.companion
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
 fun MapScreen(navController: NavController) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    val hadzici = LatLng(43.82222,   18.20667)
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(hadzici, 10f)
+    }
+
+    GoogleMap(
+        modifier = Modifier.fillMaxHeight(.89f),
+        cameraPositionState = cameraPositionState,
+        uiSettings = MapUiSettings(
+            zoomControlsEnabled = false,
+            compassEnabled = true,
+            myLocationButtonEnabled = true
+        )
     ) {
-        Text(text = "Map Screen", fontSize = 32.sp, fontWeight = FontWeight.Bold)
+        Marker(
+            state = MarkerState(position = hadzici),
+            title = "Hadžići",
+            snippet = "Marker in Hadžići"
+        )
     }
 }

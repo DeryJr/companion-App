@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun NavigationDrawer() {
-
     Column(modifier = Modifier.background(Color(0xffeeeeee))) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
