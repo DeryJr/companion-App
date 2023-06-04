@@ -37,7 +37,12 @@ fun NavigationDrawer() {
                     .padding(8.dp)
                     .clip(CircleShape)
             )
-            Text(text = "Ivan", modifier = Modifier.padding(8.dp), color = Color.Black)
+            Text(text = "Traveler", modifier = Modifier.padding(8.dp), color = Color.Black)
         }
     }
+}
+
+@Composable
+fun UserLogOut() {
+
 }
